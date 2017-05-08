@@ -1,7 +1,7 @@
 # GeoJson Viewer
 ## View GeoJson files on your Android Device
 
-![](https://lh3.googleusercontent.com/WYE-NyxCW18ALdM8YyKnHxY_u2F4WCNMlsoJJs9iki1kAdPRNURq67gZQylr9ByvQak=w300-rw)
+![](https://cdn-images-1.medium.com/max/2000/1*O0WvfPtJvNpPCZDPEVqUjg.png)
 
 <a href='https://play.google.com/store/apps/details?id=com.nextome.geojsonviewer&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="300"/></a>
 
@@ -28,6 +28,10 @@ Same _.geojson_ file opened with Google Maps, Open Street Map and MapBox
  * Add your own Google Maps and Mapbox API keys in _strings.xml_;
  
 We'll also be happy to accept your pull requests.
+ 
+## Read More
+Read more about adding a GeoJson layer on maps on our [blog](https://medium.com/nextome/show-a-geojson-layer-on-google-maps-osm-mapbox-on-android-cd75b8377ba).
+ 
 
 ## Install the app
 GeoJson Viewer is available for free on [Google Play](https://play.google.com/store/apps/details?id=com.nextome.geojsonviewer).
