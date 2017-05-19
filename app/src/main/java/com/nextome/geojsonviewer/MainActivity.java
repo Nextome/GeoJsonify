@@ -103,8 +103,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBackPressed(View v) {
-        welcomeView.setVisibility(View.VISIBLE);
-        mapPickerView.setVisibility(View.GONE);
+        if (mapPickerView.getVisibility() == View.VISIBLE){
+            welcomeView.setVisibility(View.VISIBLE);
+            mapPickerView.setVisibility(View.INVISIBLE);
+        } else if (welcomeView.getVisibility() == View.VISIBLE){
+            finish();
+        }
     }
 
     @Override

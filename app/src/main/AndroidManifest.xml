@@ -64,7 +64,7 @@
         <activity
             android:name="com.nextome.geojsonviewer.MapBoxActivity"
             android:label="@string/title_activity_map_box"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
