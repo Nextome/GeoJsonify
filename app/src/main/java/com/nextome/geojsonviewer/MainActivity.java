@@ -28,13 +28,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 2;
-    private Uri fileUri;
     private View mapPickerView;
     private View welcomeView;
+    private ArrayList<String> fileUris = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openMap(Class<?> activity) {
-        if (fileUri != null) {
+        if (fileUris != null) {
             Intent mapsIntent = new Intent(this, activity);
-            mapsIntent.putExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI, fileUri.toString());
+            mapsIntent.putStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI, fileUris);
             startActivity(mapsIntent);
         } else {
             Toast.makeText(getApplicationContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
@@ -100,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
     public void openNextomeWebsite(View v) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.nextome.net"));
         startActivity(browserIntent);
+    }
+
+    public void onAddJsonPressed(View v){
+        openFilePicker(v);
     }
 
     public void onBackPressed(View v) {
@@ -122,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
-                fileUri = resultData.getData();
+                fileUris.add(resultData.getData().toString());
                 mapPickerView.setVisibility(View.VISIBLE);
                 welcomeView.setVisibility(View.GONE);
             }

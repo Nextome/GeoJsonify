@@ -28,6 +28,7 @@
     <string name="activity_main_ask_permission">We need storage permission to store map data.</string>
     <string name="activity_main_info"><![CDATA[Made with <3 at Nextome]]></string>
     <string name="activity_main_back">BACK</string>
+    <string name="activity_main_add">ADD ANOTHER</string>
 
     <string name="gmaps_key" templateMergeStrategy="preserve" translatable="false">
         GOOGLE_MAPS_KEY_HERE

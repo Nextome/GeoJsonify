@@ -29,17 +29,23 @@ import com.google.maps.android.geojson.GeoJsonLayer;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private Uri jsonUri;
+    private ArrayList<String> jsonUriStrings;
+    private ArrayList<Uri> jsonUris;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        jsonUri = Uri.parse(getIntent().getStringExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI));
+        jsonUriStrings = getIntent().getStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI);
+        for (String uri:jsonUriStrings){
+            jsonUris.add(Uri.parse(uri));
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -50,10 +56,13 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Context context = getApplicationContext();
-
+        GeoJsonLayer layer = null;
         try {
-            GeoJsonLayer layer = new GeoJsonLayer(mMap, new JSONObject(FileUtilities.getStringFromFile(jsonUri, context)));
-            layer.addLayerToMap();
+            for (Uri uri:jsonUris)
+            layer = new GeoJsonLayer(mMap, new JSONObject(FileUtilities.getStringFromFile(uri, context)));
+            if (layer!=null) {
+                layer.addLayerToMap();
+            }
         } catch (Exception e) {
             Toast.makeText(context, R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
             e.printStackTrace();
