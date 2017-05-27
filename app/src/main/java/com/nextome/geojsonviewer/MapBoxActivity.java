@@ -34,12 +34,14 @@ import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.mapbox.services.commons.geojson.Point;
 import com.mapbox.services.commons.models.Position;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapBoxActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private MapView mapView;
-    private Uri fileUri;
+    private ArrayList<String> jsonUriStrings;
+    private ArrayList<Uri> jsonUris = new ArrayList<>();
     private Context context;
     private MapboxMap mapboxMap;
 
@@ -50,7 +52,11 @@ public class MapBoxActivity extends AppCompatActivity implements OnMapReadyCallb
         Mapbox.getInstance(context, getString(R.string.mapbox_key));
 
         setContentView(R.layout.activity_map_box);
-        fileUri = Uri.parse(getIntent().getStringExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI));
+        jsonUriStrings = getIntent().getStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI);
+
+        for (String uri:jsonUriStrings){
+            jsonUris.add(Uri.parse(uri));
+        }
 
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
@@ -62,21 +68,24 @@ public class MapBoxActivity extends AppCompatActivity implements OnMapReadyCallb
         this.mapboxMap = mapboxMap;
 
         try {
-            GeoJsonSource source = new GeoJsonSource("geojson", FileUtilities.getStringFromFile(fileUri, context));
-            mapboxMap.addSource(source);
-            mapboxMap.addLayer(new LineLayer("geojson", "geojson"));
+            for (int i=0; i<jsonUris.size(); i++) {
+                Uri uri = jsonUris.get(i);
+                GeoJsonSource source = new GeoJsonSource("geojson"+i, FileUtilities.getStringFromFile(uri, context));
+                mapboxMap.addSource(source);
+                mapboxMap.addLayer(new LineLayer("geojson"+i, "geojson"+i));
 
 
-            FeatureCollection featureCollection = FeatureCollection.fromJson(FileUtilities.getStringFromFile(fileUri, context));
+                FeatureCollection featureCollection = FeatureCollection.fromJson(FileUtilities.getStringFromFile(uri, context));
 
-            List<Feature> features = featureCollection.getFeatures();
+                List<Feature> features = featureCollection.getFeatures();
 
-            for (Feature f : features) {
-                if (f.getGeometry() instanceof Point) {
-                    Position coordinates = (Position) f.getGeometry().getCoordinates();
-                    mapboxMap.addMarker(new MarkerViewOptions()
-                            .position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude()))
-                    );
+                for (Feature f : features) {
+                    if (f.getGeometry() instanceof Point) {
+                        Position coordinates = (Position) f.getGeometry().getCoordinates();
+                        mapboxMap.addMarker(new MarkerViewOptions()
+                                .position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude()))
+                        );
+                    }
                 }
             }
 

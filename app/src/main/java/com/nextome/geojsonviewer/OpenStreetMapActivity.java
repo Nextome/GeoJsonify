@@ -34,10 +34,13 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 
+import java.util.ArrayList;
+
 
 public class OpenStreetMapActivity extends AppCompatActivity {
 
-    Uri fileUri;
+    private ArrayList<String> jsonUriStrings;
+    private ArrayList<Uri> jsonUris = new ArrayList<>();
     Context context;
 
     @Override
@@ -46,8 +49,11 @@ public class OpenStreetMapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_open_street_map);
         context = getApplicationContext();
 
-        fileUri = Uri.parse(getIntent().getStringExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI));
+        jsonUriStrings = getIntent().getStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI);
 
+        for (String uri:jsonUriStrings){
+            jsonUris.add(Uri.parse(uri));
+        }
 
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
@@ -58,17 +64,18 @@ public class OpenStreetMapActivity extends AppCompatActivity {
         map.setMaxZoomLevel(null);
 
         try {
-            KmlDocument kmlDocument = new KmlDocument();
-            Log.e("ntm", FileUtilities.getStringFromFile(fileUri, context));
-            kmlDocument.parseGeoJSON(FileUtilities.getStringFromFile(fileUri, context));
+            for (Uri uri:jsonUris) {
+                KmlDocument kmlDocument = new KmlDocument();
+                kmlDocument.parseGeoJSON(FileUtilities.getStringFromFile(uri, context));
 
-            Drawable defaultMarker = getResources().getDrawable(R.drawable.marker_default);
-            Bitmap defaultBitmap = ((BitmapDrawable) defaultMarker).getBitmap();
-            Style defaultStyle = new Style(defaultBitmap, 0x901010AA, 5f, 0x20AA1010);
-            FolderOverlay geoJsonOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, defaultStyle, null, kmlDocument);
+                Drawable defaultMarker = getResources().getDrawable(R.drawable.marker_default);
+                Bitmap defaultBitmap = ((BitmapDrawable) defaultMarker).getBitmap();
+                Style defaultStyle = new Style(defaultBitmap, 0x901010AA, 5f, 0x20AA1010);
+                FolderOverlay geoJsonOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, defaultStyle, null, kmlDocument);
 
-            map.getOverlays().add(geoJsonOverlay);
-            map.invalidate();
+                map.getOverlays().add(geoJsonOverlay);
+                map.invalidate();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(context, R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();

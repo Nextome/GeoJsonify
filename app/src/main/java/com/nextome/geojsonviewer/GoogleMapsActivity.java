@@ -35,7 +35,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     private GoogleMap mMap;
     private ArrayList<String> jsonUriStrings;
-    private ArrayList<Uri> jsonUris;
+    private ArrayList<Uri> jsonUris = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
