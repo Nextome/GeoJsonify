@@ -59,6 +59,7 @@
             android:orientation="vertical"
             android:padding="16dp">
             <TextView
+                android:id="@+id/activity_main_text_open_with"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/activity_main_open"
@@ -103,7 +104,6 @@
                     android:onClick="onAddJsonPressed"
                     android:text="@string/activity_main_add"/>
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

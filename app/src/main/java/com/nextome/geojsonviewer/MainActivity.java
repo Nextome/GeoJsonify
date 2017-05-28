@@ -26,6 +26,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 2;
     private View mapPickerView;
     private View welcomeView;
+    private TextView openWithTextView;
     private ArrayList<String> fileUris = new ArrayList<>();
 
     @Override
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
         welcomeView = findViewById(R.id.activity_main_layout_welcome);
         mapPickerView = findViewById(R.id.activity_main_layout_map_picker);
+        openWithTextView = (TextView) findViewById(R.id.activity_main_text_open_with);
     }
 
     private void checkPermissions() {
@@ -129,6 +132,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
                 fileUris.add(resultData.getData().toString());
+                if (fileUris.size()>1) {
+                    String openWithString = fileUris.size() + " " + getString(R.string.activity_main_open_multiple);
+                    openWithTextView.setText(openWithString);
+                }
                 mapPickerView.setVisibility(View.VISIBLE);
                 welcomeView.setVisibility(View.GONE);
             }

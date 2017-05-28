@@ -25,6 +25,7 @@
     <string name="activity_main_open_osm">Open Street Map</string>
     <string name="activity_main_open_mapbox">Mapbox</string>
     <string name="activity_main_open">Open with:</string>
+    <string name="activity_main_open_multiple">files will be opened with:</string>
     <string name="activity_main_ask_permission">We need storage permission to store map data.</string>
     <string name="activity_main_info"><![CDATA[Made with <3 at Nextome]]></string>
     <string name="activity_main_back">BACK</string>

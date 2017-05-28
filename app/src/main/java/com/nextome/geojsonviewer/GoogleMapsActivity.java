@@ -58,10 +58,11 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         Context context = getApplicationContext();
         GeoJsonLayer layer = null;
         try {
-            for (Uri uri:jsonUris)
-            layer = new GeoJsonLayer(mMap, new JSONObject(FileUtilities.getStringFromFile(uri, context)));
-            if (layer!=null) {
-                layer.addLayerToMap();
+            for (Uri uri:jsonUris) {
+                layer = new GeoJsonLayer(mMap, new JSONObject(FileUtilities.getStringFromFile(uri, context)));
+                if (layer != null) {
+                    layer.addLayerToMap();
+                }
             }
         } catch (Exception e) {
             Toast.makeText(context, R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
