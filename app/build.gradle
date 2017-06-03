@@ -54,5 +54,7 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.4.+'
     compile 'com.github.MKergall:osmbonuspack:6.3'
     compile 'com.android.support:design:25.3.1'
+
+    compile 'com.pes.materialcolorpicker:library:1.1.+'
     testCompile 'junit:junit:4.12'
 }

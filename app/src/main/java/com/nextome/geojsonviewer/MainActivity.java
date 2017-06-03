@@ -20,8 +20,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,26 +31,48 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 2;
+    private static final int DEFAULT_LAYER_COLOR = Color.argb(0,0,0,0);
     private View mapPickerView;
     private View welcomeView;
+    private View colorPickedView;
     private TextView openWithTextView;
     private ArrayList<String> fileUris = new ArrayList<>();
+    private ArrayList<Integer> layerColors = new ArrayList<>();
+    private ColorPicker colorPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkPermissions();
+        colorPicker = new ColorPicker(MainActivity.this, 0,0,0);
+
+        colorPickedView = findViewById(R.id.activity_main_color_picked);
         welcomeView = findViewById(R.id.activity_main_layout_welcome);
         mapPickerView = findViewById(R.id.activity_main_layout_map_picker);
         openWithTextView = (TextView) findViewById(R.id.activity_main_text_open_with);
+        colorPickedView.setBackgroundColor(DEFAULT_LAYER_COLOR);
+
+        checkPermissions();
+
+        colorPicker.setCallback(new ColorPickerCallback() {
+            @Override
+            public void onColorChosen(@ColorInt int color) {
+                if (layerColors.size()!=0){
+                    layerColors.add(layerColors.size()-1, color);
+                    colorPickedView.setBackgroundColor(color);
+                }
+            }
+        });
     }
 
     private void checkPermissions() {
@@ -102,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onLayerColorPressed(View view) {
+        colorPicker.show();
+    }
+
     public void openNextomeWebsite(View v) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.nextome.net"));
         startActivity(browserIntent);
@@ -138,6 +166,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 mapPickerView.setVisibility(View.VISIBLE);
                 welcomeView.setVisibility(View.GONE);
+
+                layerColors.add(fileUris.size(), DEFAULT_LAYER_COLOR);
             }
         }
     }

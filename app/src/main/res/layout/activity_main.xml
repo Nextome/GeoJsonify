@@ -80,6 +80,26 @@
                 android:layout_height="wrap_content"
                 android:text="@string/activity_main_open_mapbox"
                 android:onClick="openMapbox"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:layout_marginRight="16dp"
+                    android:text="Layer color:"/>
+                <View
+                    android:id="@+id/activity_main_color_picked"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:onClick="onLayerColorPressed"
+                    android:background="#333333"/>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
