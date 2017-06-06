@@ -44,6 +44,7 @@ dependencies {
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.0.2@aar') {
         transitive = true
     }
+    compile 'me.priyesh:chroma:1.0.2'
 
     compile 'com.karumi:dexter:4.1.0'
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -55,6 +56,5 @@ dependencies {
     compile 'com.github.MKergall:osmbonuspack:6.3'
     compile 'com.android.support:design:25.3.1'
 
-    compile 'com.pes.materialcolorpicker:library:1.1.+'
     testCompile 'junit:junit:4.12'
 }

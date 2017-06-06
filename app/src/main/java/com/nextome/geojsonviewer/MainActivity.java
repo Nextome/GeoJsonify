@@ -27,12 +27,15 @@ import android.support.annotation.ColorInt;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+
+import me.priyesh.chroma.ChromaDialog;
+import me.priyesh.chroma.ColorMode;
+import me.priyesh.chroma.ColorSelectListener;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
-import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 
 import java.util.ArrayList;
 
@@ -47,14 +50,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView openWithTextView;
     private ArrayList<String> fileUris = new ArrayList<>();
     private ArrayList<Integer> layerColors = new ArrayList<>();
-    private ColorPicker colorPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        colorPicker = new ColorPicker(MainActivity.this, 0,0,0);
 
         colorPickedView = findViewById(R.id.activity_main_color_picked);
         welcomeView = findViewById(R.id.activity_main_layout_welcome);
@@ -63,16 +63,6 @@ public class MainActivity extends AppCompatActivity {
         colorPickedView.setBackgroundColor(DEFAULT_LAYER_COLOR);
 
         checkPermissions();
-
-        colorPicker.setCallback(new ColorPickerCallback() {
-            @Override
-            public void onColorChosen(@ColorInt int color) {
-                if (layerColors.size()!=0){
-                    layerColors.add(layerColors.size()-1, color);
-                    colorPickedView.setBackgroundColor(color);
-                }
-            }
-        });
     }
 
     private void checkPermissions() {
@@ -127,7 +117,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onLayerColorPressed(View view) {
-        colorPicker.show();
+        new ChromaDialog.Builder()
+                .initialColor(Color.BLACK)
+                .colorMode(ColorMode.RGB) // There's also ARGB and HSV
+                .onColorSelected(new ColorSelectListener() {
+                    @Override
+                    public void onColorSelected(int i) {
+                        if (layerColors.size()!=0){
+                            layerColors.add(fileUris.size()-1, i);
+                            Log.e("ntm", "added color position " + (fileUris.size()-1));
+                            colorPickedView.setBackgroundColor(i);
+                        }
+                    }
+                })
+                .create()
+                .show(getSupportFragmentManager(), "ChromaDialog");
     }
 
     public void openNextomeWebsite(View v) {
@@ -167,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 mapPickerView.setVisibility(View.VISIBLE);
                 welcomeView.setVisibility(View.GONE);
 
-                layerColors.add(fileUris.size(), DEFAULT_LAYER_COLOR);
+                layerColors.add(fileUris.size()-1, DEFAULT_LAYER_COLOR);
             }
         }
     }
