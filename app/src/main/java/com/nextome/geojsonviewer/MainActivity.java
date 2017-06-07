@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 2;
-    private static final int DEFAULT_LAYER_COLOR = Color.argb(0,0,0,0);
+    private static final int DEFAULT_LAYER_COLOR = Color.argb(255,0,0,0);
     private View mapPickerView;
     private View welcomeView;
     private View colorPickedView;
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         if (fileUris != null) {
             Intent mapsIntent = new Intent(this, activity);
             mapsIntent.putStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI, fileUris);
+            mapsIntent.putIntegerArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_COLORS, layerColors);
             startActivity(mapsIntent);
         } else {
             Toast.makeText(getApplicationContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
@@ -118,14 +119,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLayerColorPressed(View view) {
         new ChromaDialog.Builder()
-                .initialColor(Color.BLACK)
-                .colorMode(ColorMode.RGB) // There's also ARGB and HSV
+                .initialColor(layerColors.get(layerColors.size()-1))
+                .colorMode(ColorMode.RGB)
                 .onColorSelected(new ColorSelectListener() {
                     @Override
                     public void onColorSelected(int i) {
                         if (layerColors.size()!=0){
                             layerColors.add(fileUris.size()-1, i);
-                            Log.e("ntm", "added color position " + (fileUris.size()-1));
                             colorPickedView.setBackgroundColor(i);
                         }
                     }
@@ -147,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
         if (mapPickerView.getVisibility() == View.VISIBLE){
             welcomeView.setVisibility(View.VISIBLE);
             mapPickerView.setVisibility(View.INVISIBLE);
+            fileUris = new ArrayList<>();
+            layerColors = new ArrayList<>();
+
         } else if (welcomeView.getVisibility() == View.VISIBLE){
             finish();
         }
@@ -168,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     String openWithString = fileUris.size() + " " + getString(R.string.activity_main_open_multiple);
                     openWithTextView.setText(openWithString);
                 }
+                colorPickedView.setBackgroundColor(DEFAULT_LAYER_COLOR);
                 mapPickerView.setVisibility(View.VISIBLE);
                 welcomeView.setVisibility(View.GONE);
 

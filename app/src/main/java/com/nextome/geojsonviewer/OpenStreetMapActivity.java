@@ -27,6 +27,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cocoahero.android.geojson.GeoJSON;
+
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.Style;
 import org.osmdroid.config.Configuration;
@@ -41,6 +43,7 @@ public class OpenStreetMapActivity extends AppCompatActivity {
 
     private ArrayList<String> jsonUriStrings;
     private ArrayList<Uri> jsonUris = new ArrayList<>();
+    private ArrayList<Integer> jsonColors = new ArrayList<>();
     Context context;
 
     @Override
@@ -50,6 +53,7 @@ public class OpenStreetMapActivity extends AppCompatActivity {
         context = getApplicationContext();
 
         jsonUriStrings = getIntent().getStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI);
+        jsonColors = getIntent().getIntegerArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_COLORS);
 
         for (String uri:jsonUriStrings){
             jsonUris.add(Uri.parse(uri));
@@ -64,13 +68,14 @@ public class OpenStreetMapActivity extends AppCompatActivity {
         map.setMaxZoomLevel(null);
 
         try {
-            for (Uri uri:jsonUris) {
+            for (int i=0; i<jsonUris.size(); i++) {
+                Uri uri = jsonUris.get(i);
                 KmlDocument kmlDocument = new KmlDocument();
                 kmlDocument.parseGeoJSON(FileUtilities.getStringFromFile(uri, context));
 
                 Drawable defaultMarker = getResources().getDrawable(R.drawable.marker_default);
                 Bitmap defaultBitmap = ((BitmapDrawable) defaultMarker).getBitmap();
-                Style defaultStyle = new Style(defaultBitmap, 0x901010AA, 5f, 0x20AA1010);
+                Style defaultStyle = new Style(defaultBitmap, jsonColors.get(i), 5f, 0x20AA1010);
                 FolderOverlay geoJsonOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, defaultStyle, null, kmlDocument);
 
                 map.getOverlays().add(geoJsonOverlay);
