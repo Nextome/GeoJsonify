@@ -19,33 +19,28 @@ package com.nextome.geojsonviewer;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.maps.android.geojson.GeoJsonLayer;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private ArrayList<String> jsonUriStrings;
-    private ArrayList<Uri> jsonUris = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getIntentExtras(getIntent());
         setContentView(R.layout.activity_maps);
-
-        jsonUriStrings = getIntent().getStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI);
-        for (String uri:jsonUriStrings){
-            jsonUris.add(Uri.parse(uri));
-        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -58,9 +53,10 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         Context context = getApplicationContext();
         GeoJsonLayer layer = null;
         try {
-            for (Uri uri:jsonUris) {
-                layer = new GeoJsonLayer(mMap, new JSONObject(FileUtilities.getStringFromFile(uri, context)));
+            for (int i=0; i<this.getJsonUris().size(); i++) {
+                layer = new GeoJsonLayer(mMap, new JSONObject(FileUtilities.getStringFromFile(this.getJsonUris().get(i), context)));
                 if (layer != null) {
+                    layer.getDefaultPolygonStyle().setStrokeColor(this.getJsonColors().get(i));
                     layer.addLayerToMap();
                 }
             }

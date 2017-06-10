@@ -16,18 +16,13 @@
 
 package com.nextome.geojsonviewer;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
-
-import com.cocoahero.android.geojson.GeoJSON;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.Style;
@@ -36,30 +31,14 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 
-import java.util.ArrayList;
 
-
-public class OpenStreetMapActivity extends AppCompatActivity {
-
-    private ArrayList<String> jsonUriStrings;
-    private ArrayList<Uri> jsonUris = new ArrayList<>();
-    private ArrayList<Integer> jsonColors = new ArrayList<>();
-    Context context;
+public class OpenStreetMapActivity extends MapBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_street_map);
-        context = getApplicationContext();
-
-        jsonUriStrings = getIntent().getStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI);
-        jsonColors = getIntent().getIntegerArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_COLORS);
-
-        for (String uri:jsonUriStrings){
-            jsonUris.add(Uri.parse(uri));
-        }
-
-        Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
+        this.getIntentExtras(getIntent());
 
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -67,15 +46,16 @@ public class OpenStreetMapActivity extends AppCompatActivity {
         map.getController().setZoom(4);
         map.setMaxZoomLevel(null);
 
+
         try {
-            for (int i=0; i<jsonUris.size(); i++) {
-                Uri uri = jsonUris.get(i);
+            for (int i=0; i<this.getJsonUris().size(); i++) {
+                Uri uri = this.getJsonUris().get(i);
                 KmlDocument kmlDocument = new KmlDocument();
-                kmlDocument.parseGeoJSON(FileUtilities.getStringFromFile(uri, context));
+                kmlDocument.parseGeoJSON(FileUtilities.getStringFromFile(uri, this.getContext()));
 
                 Drawable defaultMarker = getResources().getDrawable(R.drawable.marker_default);
                 Bitmap defaultBitmap = ((BitmapDrawable) defaultMarker).getBitmap();
-                Style defaultStyle = new Style(defaultBitmap, jsonColors.get(i), 5f, 0x20AA1010);
+                Style defaultStyle = new Style(defaultBitmap, this.getJsonColors().get(i), 2f, 0x00000000);
                 FolderOverlay geoJsonOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, defaultStyle, null, kmlDocument);
 
                 map.getOverlays().add(geoJsonOverlay);
@@ -83,7 +63,7 @@ public class OpenStreetMapActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(context, R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
+            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
         }
 
     }

@@ -16,10 +16,8 @@
 
 package com.nextome.geojsonviewer;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
@@ -34,29 +32,23 @@ import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.mapbox.services.commons.geojson.Point;
 import com.mapbox.services.commons.models.Position;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MapBoxActivity extends AppCompatActivity implements OnMapReadyCallback {
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
+
+public class MapBoxActivity extends MapBaseActivity implements OnMapReadyCallback {
 
     private MapView mapView;
-    private ArrayList<String> jsonUriStrings;
-    private ArrayList<Uri> jsonUris = new ArrayList<>();
-    private Context context;
     private MapboxMap mapboxMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = getApplicationContext();
-        Mapbox.getInstance(context, getString(R.string.mapbox_key));
+        this.getIntentExtras(getIntent());
+        Mapbox.getInstance(this.getContext(), getString(R.string.mapbox_key));
 
         setContentView(R.layout.activity_map_box);
-        jsonUriStrings = getIntent().getStringArrayListExtra(GeoJsonViewerConstants.INTENT_EXTRA_JSON_URI);
-
-        for (String uri:jsonUriStrings){
-            jsonUris.add(Uri.parse(uri));
-        }
 
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
@@ -68,15 +60,15 @@ public class MapBoxActivity extends AppCompatActivity implements OnMapReadyCallb
         this.mapboxMap = mapboxMap;
 
         try {
-            for (int i=0; i<jsonUris.size(); i++) {
-                Uri uri = jsonUris.get(i);
-                GeoJsonSource source = new GeoJsonSource("geojson"+i, FileUtilities.getStringFromFile(uri, context));
+            for (int i=0; i<this.getJsonUris().size(); i++) {
+                Uri uri = this.getJsonUris().get(i);
+                GeoJsonSource source = new GeoJsonSource("geojson"+i, FileUtilities.getStringFromFile(uri, this.getContext()));
                 mapboxMap.addSource(source);
-                mapboxMap.addLayer(new LineLayer("geojson"+i, "geojson"+i));
+                LineLayer lineLayer = new LineLayer("geojson"+i, "geojson"+i);
+                lineLayer.setProperties(lineColor(this.getJsonColors().get(i)));
+                mapboxMap.addLayer(lineLayer);
 
-
-                FeatureCollection featureCollection = FeatureCollection.fromJson(FileUtilities.getStringFromFile(uri, context));
-
+                FeatureCollection featureCollection = FeatureCollection.fromJson(FileUtilities.getStringFromFile(uri, this.getContext()));
                 List<Feature> features = featureCollection.getFeatures();
 
                 for (Feature f : features) {
