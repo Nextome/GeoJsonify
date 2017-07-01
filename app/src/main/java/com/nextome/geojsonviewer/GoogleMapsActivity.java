@@ -18,6 +18,7 @@ package com.nextome.geojsonviewer;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonGeometry;
 import com.google.maps.android.geojson.GeoJsonLayer;
@@ -71,7 +73,12 @@ public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCal
         }
 
         if (layer != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getLayerBoundingBox(layer), 0));
+            try {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getLayerBoundingBox(layer), 0));
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                Log.i("geojson-viewer", "No coordinates available to center the camera.");
+            }
         }
     }
 
@@ -82,12 +89,14 @@ public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCal
             if (feature.hasGeometry()) {
                 GeoJsonGeometry geometry = feature.getGeometry();
 
-                List<? extends List<LatLng>> lists =
-                        ((GeoJsonPolygon) geometry).getCoordinates();
+                if (geometry instanceof GeoJsonPolygon) {
+                    List<? extends List<LatLng>> lists =
+                            ((GeoJsonPolygon) geometry).getCoordinates();
 
-                for (List<LatLng> list : lists) {
-                    for (LatLng latLng : list) {
-                        builder.include(latLng);
+                    for (List<LatLng> list : lists) {
+                        for (LatLng latLng : list) {
+                            builder.include(latLng);
+                        }
                     }
                 }
             }

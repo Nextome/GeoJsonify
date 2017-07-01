@@ -108,6 +108,7 @@ public class MapBoxActivity extends MapBaseActivity implements OnMapReadyCallbac
         try {
             mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 0));
         } catch (InvalidLatLngBoundsException e){
+            e.printStackTrace();
             Log.i("geojson-viewer", "No coordinates available to center the camera.");
         }
     }
