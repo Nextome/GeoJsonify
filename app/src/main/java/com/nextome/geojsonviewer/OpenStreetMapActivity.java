@@ -75,7 +75,11 @@ public class OpenStreetMapActivity extends MapBaseActivity {
             @Override
             public void onFirstLayout(View v, int left, int top, int right, int bottom) {
                 BoundingBox boundingBox = kmlDocument.mKmlRoot.getBoundingBox();
+                // Yep it's called 2 times. Another workaround for zoomToBoundingBox.
+                // See: https://github.com/osmdroid/osmdroid/issues/236#issuecomment-257061630
                 map.zoomToBoundingBox(boundingBox, false);
+                map.zoomToBoundingBox(boundingBox, false);
+                map.invalidate();;
             }
         });
     }
