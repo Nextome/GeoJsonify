@@ -22,12 +22,14 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.Toast;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.Style;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 
@@ -40,17 +42,17 @@ public class OpenStreetMapActivity extends MapBaseActivity {
         setContentView(R.layout.activity_open_street_map);
         this.getIntentExtras(getIntent());
 
-        MapView map = (MapView) findViewById(R.id.map);
+        final MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
         map.getController().setZoom(4);
         map.setMaxZoomLevel(null);
 
+        final KmlDocument kmlDocument = new KmlDocument();
 
         try {
             for (int i=0; i<this.getJsonUris().size(); i++) {
                 Uri uri = this.getJsonUris().get(i);
-                KmlDocument kmlDocument = new KmlDocument();
                 kmlDocument.parseGeoJSON(FileUtilities.getStringFromFile(uri, this.getContext()));
 
                 Drawable defaultMarker = getResources().getDrawable(R.drawable.marker_default);
@@ -66,7 +68,19 @@ public class OpenStreetMapActivity extends MapBaseActivity {
             Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
         }
 
+
+        // Workaround for osmdroid issue
+        // See: https://github.com/osmdroid/osmdroid/issues/337
+        map.addOnFirstLayoutListener(new MapView.OnFirstLayoutListener() {
+            @Override
+            public void onFirstLayout(View v, int left, int top, int right, int bottom) {
+                BoundingBox boundingBox = kmlDocument.mKmlRoot.getBoundingBox();
+                map.zoomToBoundingBox(boundingBox, false);
+            }
+        });
     }
+
+
 
     @Override
     public void onResume() {
