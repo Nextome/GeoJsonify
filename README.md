@@ -1,9 +1,7 @@
 # GeoJson Viewer
 ## View GeoJson files on your Android Device
 
-![](https://cdn-images-1.medium.com/max/2000/1*O0WvfPtJvNpPCZDPEVqUjg.png)
-
-[![](https://github.com/Nextome/geojson-viewer/blob/master/resources/conver.jpg)](https://youtu.be/qo7hc_iLI6s)
+[![](https://github.com/Nextome/geojson-viewer/blob/master/resources/cover.jpg)](https://youtu.be/qo7hc_iLI6s)
 
 
 ## How to use
