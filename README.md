@@ -3,7 +3,8 @@
 
 ![](https://cdn-images-1.medium.com/max/2000/1*O0WvfPtJvNpPCZDPEVqUjg.png)
 
-<a href='https://play.google.com/store/apps/details?id=com.nextome.geojsonviewer&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="300"/></a>
+[![](https://github.com/Nextome/geojson-viewer/blob/master/resources/conver.jpg)](https://youtu.be/qo7hc_iLI6s)
+
 
 ## How to use
 Simply choose a _GeoJson_ file on your device and select a map provider from the list.
