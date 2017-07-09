@@ -23,7 +23,7 @@ import java.util.List;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
 
 class JsonifyMapBox {
-    static void GeoJsonifyMap(MapboxMap mapboxMap, List<Uri> jsonUris, List<Integer> jsonColors, Context context) {
+    static void geoJsonifyMap(MapboxMap mapboxMap, List<Uri> jsonUris, List<Integer> jsonColors, Context context) {
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
         try {
             for (int i=0; i<jsonUris.size(); i++) {

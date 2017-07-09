@@ -25,6 +25,7 @@ android {
 dependencies {
     compile 'com.google.android.gms:play-services-maps:11.0.2'
     compile 'com.google.maps.android:android-maps-utils:0.4.4'
+    compile 'com.github.MKergall:osmbonuspack:6.3'
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.0.2@aar') {
         transitive = true
     }

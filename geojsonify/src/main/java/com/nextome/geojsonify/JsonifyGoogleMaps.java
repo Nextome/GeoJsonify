@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 class JsonifyGoogleMaps {
-    static void GeoJsonifyMap(GoogleMap map, List<Uri> jsonUris, List<Integer> jsonColors, Context context){
+    static void geoJsonifyMap(GoogleMap map, List<Uri> jsonUris, List<Integer> jsonColors, Context context){
         GeoJsonLayer layer = null;
 
         try {
