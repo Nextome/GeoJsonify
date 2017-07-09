@@ -38,6 +38,6 @@ public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCal
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        GeoJsonify.GeoJsonifyMap(googleMap, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        GeoJsonify.geoJsonifyMap(googleMap, this.getJsonUris(), this.getJsonColors(), this.getContext());
     }
 }
