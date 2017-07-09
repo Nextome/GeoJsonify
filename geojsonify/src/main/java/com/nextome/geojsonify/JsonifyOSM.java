@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.View;
-import android.widget.Toast;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.Style;
@@ -14,28 +13,24 @@ import org.osmdroid.util.BoundingBox;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 
+import java.io.IOException;
 import java.util.List;
 
 public class JsonifyOSM {
-    static void geoJsonifyMap(final MapView map, List<Uri> jsonUris, List<Integer> jsonColors, Context context) {
+    static void geoJsonifyMap(final MapView map, List<Uri> jsonUris, List<Integer> jsonColors, Context context) throws IOException {
         final KmlDocument kmlDocument = new KmlDocument();
 
-        try {
-            for (int i=0; i<jsonUris.size(); i++) {
-                Uri uri = jsonUris.get(i);
-                kmlDocument.parseGeoJSON(FileUtils.getStringFromFile(uri, context));
+        for (int i=0; i<jsonUris.size(); i++) {
+            Uri uri = jsonUris.get(i);
+            kmlDocument.parseGeoJSON(FileUtils.getStringFromFile(uri, context));
 
-                Drawable defaultMarker = context.getResources().getDrawable(R.drawable.marker_default);
-                Bitmap defaultBitmap = ((BitmapDrawable) defaultMarker).getBitmap();
-                Style defaultStyle = new Style(defaultBitmap, jsonColors.get(i), 2f, 0x00000000);
-                FolderOverlay geoJsonOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, defaultStyle, null, kmlDocument);
+            Drawable defaultMarker = context.getResources().getDrawable(R.drawable.marker_default);
+            Bitmap defaultBitmap = ((BitmapDrawable) defaultMarker).getBitmap();
+            Style defaultStyle = new Style(defaultBitmap, jsonColors.get(i), 2f, 0x00000000);
+            FolderOverlay geoJsonOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, defaultStyle, null, kmlDocument);
 
-                map.getOverlays().add(geoJsonOverlay);
-                map.invalidate();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(context, "Unable to read file", Toast.LENGTH_LONG).show();
+            map.getOverlays().add(geoJsonOverlay);
+            map.invalidate();
         }
 
 

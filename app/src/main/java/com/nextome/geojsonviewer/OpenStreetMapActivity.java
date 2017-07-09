@@ -19,12 +19,15 @@ package com.nextome.geojsonviewer;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.nextome.geojsonify.GeoJsonify;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.MapView;
+
+import java.io.IOException;
 
 
 public class OpenStreetMapActivity extends MapBaseActivity {
@@ -41,7 +44,12 @@ public class OpenStreetMapActivity extends MapBaseActivity {
         map.getController().setZoom(4);
         map.setMaxZoomLevel(null);
 
-        GeoJsonify.geoJsonifyMap(map, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        try {
+            GeoJsonify.geoJsonifyMap(map, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_SHORT).show();
+        }
     }
 
 

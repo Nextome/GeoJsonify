@@ -17,11 +17,16 @@
 package com.nextome.geojsonviewer;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.nextome.geojsonify.GeoJsonify;
+
+import org.json.JSONException;
+
+import java.io.IOException;
 
 public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCallback {
 
@@ -38,6 +43,14 @@ public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCal
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        GeoJsonify.geoJsonifyMap(googleMap, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        try {
+            GeoJsonify.geoJsonifyMap(googleMap, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_parse, Toast.LENGTH_SHORT).show();
+        }
     }
 }

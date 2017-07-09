@@ -23,43 +23,40 @@ import java.util.List;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
 
 class JsonifyMapBox {
-    static void geoJsonifyMap(MapboxMap mapboxMap, List<Uri> jsonUris, List<Integer> jsonColors, Context context) {
+    static void geoJsonifyMap(MapboxMap mapboxMap, List<Uri> jsonUris, List<Integer> jsonColors, Context context) throws IOException {
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-        try {
-            for (int i=0; i<jsonUris.size(); i++) {
-                Uri uri = jsonUris.get(i);
-                GeoJsonSource source = new GeoJsonSource("geojson"+i, FileUtils.getStringFromFile(uri, context));
-                mapboxMap.addSource(source);
-                LineLayer lineLayer = new LineLayer("geojson"+i, "geojson"+i);
-                lineLayer.setProperties(lineColor(jsonColors.get(i)));
-                mapboxMap.addLayer(lineLayer);
+        for (int i=0; i<jsonUris.size(); i++) {
+            Uri uri = jsonUris.get(i);
 
-                FeatureCollection featureCollection = FeatureCollection.fromJson(FileUtils.getStringFromFile(uri, context));
-                List<Feature> features = featureCollection.getFeatures();
+            String geoJsonString = FileUtils.getStringFromFile(uri, context);
+            GeoJsonSource source = new GeoJsonSource("geojson"+i, geoJsonString);
+            mapboxMap.addSource(source);
+            LineLayer lineLayer = new LineLayer("geojson"+i, "geojson"+i);
+            lineLayer.setProperties(lineColor(jsonColors.get(i)));
+            mapboxMap.addLayer(lineLayer);
 
-                for (Feature f : features) {
-                    if (f.getGeometry() instanceof Point) {
-                        Position coordinates = (Position) f.getGeometry().getCoordinates();
-                        mapboxMap.addMarker(new MarkerViewOptions()
-                                .position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude()))
-                        );
-                    } else if (f.getGeometry() instanceof com.mapbox.services.commons.geojson.Polygon){
-                        com.mapbox.services.commons.geojson.Polygon polygon = (com.mapbox.services.commons.geojson.Polygon) f.getGeometry();
+            FeatureCollection featureCollection = FeatureCollection.fromJson(geoJsonString);
+            List<Feature> features = featureCollection.getFeatures();
 
-                        List<List<Position>> coordinates = polygon.getCoordinates();
+            for (Feature f : features) {
+                if (f.getGeometry() instanceof Point) {
+                    Position coordinates = (Position) f.getGeometry().getCoordinates();
+                    mapboxMap.addMarker(new MarkerViewOptions()
+                            .position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude()))
+                    );
+                } else if (f.getGeometry() instanceof com.mapbox.services.commons.geojson.Polygon){
+                    com.mapbox.services.commons.geojson.Polygon polygon = (com.mapbox.services.commons.geojson.Polygon) f.getGeometry();
 
-                        for (List<Position> positions : coordinates) {
-                            for (Position position : positions) {
-                                boundsBuilder.include(new LatLng(position.getLatitude(), position.getLongitude()));
-                            }
+                    List<List<Position>> coordinates = polygon.getCoordinates();
+
+                    for (List<Position> positions : coordinates) {
+                        for (Position position : positions) {
+                            boundsBuilder.include(new LatLng(position.getLatitude(), position.getLongitude()));
                         }
                     }
-
                 }
-            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            }
         }
 
         try {

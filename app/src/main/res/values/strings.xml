@@ -35,4 +35,5 @@
         GOOGLE_MAPS_KEY_HERE
     </string>
     <string name="mapbox_key">MAPBOX_KEY_HERE</string>
+    <string name="geojson_opener_unable_to_parse">Unable to parse Json</string>
 </resources>

@@ -17,12 +17,15 @@
 package com.nextome.geojsonviewer;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.nextome.geojsonify.GeoJsonify;
+
+import java.io.IOException;
 
 public class MapBoxActivity extends MapBaseActivity implements OnMapReadyCallback {
 
@@ -43,7 +46,12 @@ public class MapBoxActivity extends MapBaseActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(MapboxMap mapboxMap) {
-        GeoJsonify.geoJsonifyMap(mapboxMap, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        try {
+            GeoJsonify.geoJsonifyMap(mapboxMap, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_SHORT).show();
+        }
     }
 
 

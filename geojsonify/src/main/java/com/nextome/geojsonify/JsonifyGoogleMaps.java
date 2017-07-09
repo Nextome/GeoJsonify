@@ -4,7 +4,6 @@ package com.nextome.geojsonify;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,25 +14,22 @@ import com.google.maps.android.geojson.GeoJsonGeometry;
 import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPolygon;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 class JsonifyGoogleMaps {
-    static void geoJsonifyMap(GoogleMap map, List<Uri> jsonUris, List<Integer> jsonColors, Context context){
+    static void geoJsonifyMap(GoogleMap map, List<Uri> jsonUris, List<Integer> jsonColors, Context context) throws IOException, JSONException {
         GeoJsonLayer layer = null;
 
-        try {
-            for (int i=0; i<jsonUris.size(); i++) {
-                layer = new GeoJsonLayer(map, new JSONObject(FileUtils.getStringFromFile(jsonUris.get(i), context)));
-                if (layer != null) {
-                    layer.getDefaultPolygonStyle().setStrokeColor(jsonColors.get(i));
-                    layer.addLayerToMap();
-                }
+        for (int i=0; i<jsonUris.size(); i++) {
+            layer = new GeoJsonLayer(map, new JSONObject(FileUtils.getStringFromFile(jsonUris.get(i), context)));
+            if (layer != null) {
+                layer.getDefaultPolygonStyle().setStrokeColor(jsonColors.get(i));
+                layer.addLayerToMap();
             }
-        } catch (Exception e) {
-            Toast.makeText(context, "Unable to read file", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
         }
 
         if (layer != null) {
