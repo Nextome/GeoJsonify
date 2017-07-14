@@ -16,30 +16,19 @@
 
 package com.nextome.geojsonviewer;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.maps.android.geojson.GeoJsonFeature;
-import com.google.maps.android.geojson.GeoJsonGeometry;
-import com.google.maps.android.geojson.GeoJsonLayer;
-import com.google.maps.android.geojson.GeoJsonPolygon;
+import com.nextome.geojsonify.GeoJsonify;
 
-import org.json.JSONObject;
+import org.json.JSONException;
 
-import java.util.List;
+import java.io.IOException;
 
 public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCallback {
-
-    private GoogleMap mMap;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,53 +43,14 @@ public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCal
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        Context context = getApplicationContext();
-        GeoJsonLayer layer = null;
-
         try {
-            for (int i=0; i<this.getJsonUris().size(); i++) {
-                layer = new GeoJsonLayer(mMap, new JSONObject(FileUtilities.getStringFromFile(this.getJsonUris().get(i), context)));
-                if (layer != null) {
-                    layer.getDefaultPolygonStyle().setStrokeColor(this.getJsonColors().get(i));
-                    layer.addLayerToMap();
-                }
-            }
-        } catch (Exception e) {
-            Toast.makeText(context, R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
+            GeoJsonify.geoJsonifyMap(googleMap, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_parse, Toast.LENGTH_SHORT).show();
         }
-
-        if (layer != null) {
-            try {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getLayerBoundingBox(layer), 0));
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-                Log.i("geojson-viewer", "No coordinates available to center the camera.");
-            }
-        }
-    }
-
-    private LatLngBounds getLayerBoundingBox(GeoJsonLayer layer){
-        LatLngBounds.Builder builder = LatLngBounds.builder();
-
-        for (GeoJsonFeature feature : layer.getFeatures()) {
-            if (feature.hasGeometry()) {
-                GeoJsonGeometry geometry = feature.getGeometry();
-
-                if (geometry instanceof GeoJsonPolygon) {
-                    List<? extends List<LatLng>> lists =
-                            ((GeoJsonPolygon) geometry).getCoordinates();
-
-                    for (List<LatLng> list : lists) {
-                        for (LatLng latLng : list) {
-                            builder.include(latLng);
-                        }
-                    }
-                }
-            }
-        }
-
-        return builder.build();
     }
 }

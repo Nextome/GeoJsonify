@@ -16,22 +16,18 @@
 
 package com.nextome.geojsonviewer;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
 import android.widget.Toast;
 
-import org.osmdroid.bonuspack.kml.KmlDocument;
-import org.osmdroid.bonuspack.kml.Style;
+import com.nextome.geojsonify.GeoJsonify;
+
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.BoundingBox;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.FolderOverlay;
+
+import java.io.IOException;
 
 
 public class OpenStreetMapActivity extends MapBaseActivity {
@@ -42,46 +38,18 @@ public class OpenStreetMapActivity extends MapBaseActivity {
         setContentView(R.layout.activity_open_street_map);
         this.getIntentExtras(getIntent());
 
-        final MapView map = (MapView) findViewById(R.id.map);
+        MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
         map.getController().setZoom(4);
         map.setMaxZoomLevel(null);
 
-        final KmlDocument kmlDocument = new KmlDocument();
-
         try {
-            for (int i=0; i<this.getJsonUris().size(); i++) {
-                Uri uri = this.getJsonUris().get(i);
-                kmlDocument.parseGeoJSON(FileUtilities.getStringFromFile(uri, this.getContext()));
-
-                Drawable defaultMarker = getResources().getDrawable(R.drawable.marker_default);
-                Bitmap defaultBitmap = ((BitmapDrawable) defaultMarker).getBitmap();
-                Style defaultStyle = new Style(defaultBitmap, this.getJsonColors().get(i), 2f, 0x00000000);
-                FolderOverlay geoJsonOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, defaultStyle, null, kmlDocument);
-
-                map.getOverlays().add(geoJsonOverlay);
-                map.invalidate();
-            }
-        } catch (Exception e) {
+            GeoJsonify.geoJsonifyMap(map, this.getJsonUris(), this.getJsonColors(), this.getContext());
+        } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_LONG).show();
+            Toast.makeText(this.getContext(), R.string.geojson_opener_unable_to_read, Toast.LENGTH_SHORT).show();
         }
-
-
-        // Workaround for osmdroid issue
-        // See: https://github.com/osmdroid/osmdroid/issues/337
-        map.addOnFirstLayoutListener(new MapView.OnFirstLayoutListener() {
-            @Override
-            public void onFirstLayout(View v, int left, int top, int right, int bottom) {
-                BoundingBox boundingBox = kmlDocument.mKmlRoot.getBoundingBox();
-                // Yep, it's called 2 times. Another workaround for zoomToBoundingBox.
-                // See: https://github.com/osmdroid/osmdroid/issues/236#issuecomment-257061630
-                map.zoomToBoundingBox(boundingBox, false);
-                map.zoomToBoundingBox(boundingBox, false);
-                map.invalidate();
-            }
-        });
     }
 
 
