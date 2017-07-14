@@ -13,11 +13,11 @@ Simply use the method:
 GeoJsonify.geoJsonifyMap(map, List<Uri> jsonUris, int color, Context context);
 ```
 
-*map* is the map where the layers will be added.
+**map** is the map where the layers will be added.
 It can be a *GoogleMap* (Google Maps) / *MapboxMap* (Mapbox) / *MapView* (OSM)
 
-*jsonUris* is a list of URIs, each one with a different .geojson file to parse
-*color* is the color of the lines that will be rendered
+**jsonUris** is a list of URIs, each one with a different .geojson file to parse
+**color** is the color of the lines that will be rendered
 
 Alternativly, you can also specify a different color for each layer using
 ```java
