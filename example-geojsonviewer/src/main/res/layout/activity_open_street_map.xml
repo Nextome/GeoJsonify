@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2017 Nextome S.r.l
   ~
@@ -14,4 +15,13 @@
   ~ limitations under the License.
   -->
 
-<manifest package="com.nextome.geojsonify" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nextome.geojsonviewer.OpenStreetMapActivity">
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

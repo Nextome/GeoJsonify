@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nextome.geojsonify;
+package com.nextome.geojsonviewer;
 
 import android.content.Context;
 import android.net.Uri;
@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class FileUtils {
+public class FileUtilities {
     private static String convertStreamToString(InputStream is) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
