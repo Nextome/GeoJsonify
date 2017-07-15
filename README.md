@@ -41,6 +41,9 @@ Alternativly, you can also specify a different color for each layer using
 GeoJsonify.geoJsonifyMap(map, List<Uri> jsonUris, List<Integer> colors, Context context);
 ```
 
+### Javadoc
+Available [here](https://nextome.github.io/GeoJsonify/index.html).
+
 ### Example (Google Maps)
 Here's a full Google Maps implementation:
 ```java
