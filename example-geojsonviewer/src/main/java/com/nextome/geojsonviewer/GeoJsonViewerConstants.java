@@ -14,4 +14,10 @@
  * limitations under the License.
  */
 
-include ':example-geojsonviewer', ':geojsonify'
+package com.nextome.geojsonviewer;
+
+public class GeoJsonViewerConstants {
+    public static String INTENT_EXTRA_JSON_URI = "json-uri";
+    public static String INTENT_EXTRA_JSON_COLORS = "json-colors";
+    public static String APP_TAG = "geojsonviewer";
+}
