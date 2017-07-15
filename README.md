@@ -1,23 +1,40 @@
 # GeoJsonify
 ## Simply add GeoJson layers to your Maps
-
-![](https://lh3.googleusercontent.com/IOziKkwBfPIyOLsQhWddI36wqQJs2lHB34g8A2JyrYrnTNp6Q3HCrtkIkfAdB8qWppgA=h900-rw)
+[![](https://jitpack.io/v/Nextome/GeoJsonify.svg)](https://jitpack.io/#Nextome/GeoJsonify)
+<br>
 ### Supported Map Services:
  * [Google Maps](https://maps.google.com/);
  * [Open Street Map](https://www.openstreetmap.org);
  * [MapBox](https://www.mapbox.com/);
 
 ### How to use
-Simply use the method:
+1. Add JitPack in your **root build.gradle** at the end of repositories:
+```gradle
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+2. Add the dependency in your **module build.gradle**:
+```gradle
+	dependencies {
+	        compile 'com.github.Nextome:GeoJsonify:v1.0.0'
+	}
+
+```
+
+3. Simply use the method:
 ```java
 GeoJsonify.geoJsonifyMap(map, List<Uri> jsonUris, int color, Context context);
 ```
 
-**map** is the map where the layers will be added.
+* **map** is the map where the layers will be added.
 It can be a *GoogleMap* (Google Maps) / *MapboxMap* (Mapbox) / *MapView* (OSM)
 
-**jsonUris** is a list of URIs, each one with a different .geojson file to parse
-**color** is the color of the lines that will be rendered
+* **jsonUris** is a list of URIs, each one with a different .geojson file to parse.
+* **color** is the color of the lines that will be rendered.
 
 Alternativly, you can also specify a different color for each layer using
 ```java
@@ -61,6 +78,9 @@ public class GoogleMapsActivity extends MapBaseActivity implements OnMapReadyCal
     }
 }
 ```
+
+![](https://lh3.googleusercontent.com/IOziKkwBfPIyOLsQhWddI36wqQJs2lHB34g8A2JyrYrnTNp6Q3HCrtkIkfAdB8qWppgA=h900-rw)
+
 
 For more examples with all services, see our example app **GeoJson Viewer**
 <br>
