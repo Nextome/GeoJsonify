@@ -44,12 +44,12 @@ dependencies {
         transitive = true
     }
     implementation 'me.priyesh:chroma:1.0.2'
-    implementation 'com.karumi:dexter:4.1.0'
+    implementation 'com.karumi:dexter:5.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.cocoahero.android:geojson:1.0.1@jar'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:0.4.+'
-    implementation 'com.github.MKergall:osmbonuspack:6.5.3'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.4.4'
+    implementation 'com.github.MKergall:osmbonuspack:6.6.0'
     implementation project(':geojsonify')
 }
