@@ -20,45 +20,57 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.exceptions.InvalidLatLngBoundsException;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.light.Position;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.mapbox.services.commons.geojson.Feature;
-import com.mapbox.services.commons.geojson.FeatureCollection;
-import com.mapbox.services.commons.geojson.Point;
-import com.mapbox.services.commons.models.Position;
 
 import java.io.IOException;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
 
 class JsonifyMapBox {
-    static void geoJsonifyMap(MapboxMap mapboxMap, List<Uri> jsonUris, List<Integer> jsonColors, Context context) throws IOException {
+    static void geoJsonifyMap(final MapboxMap mapboxMap, List<Uri> jsonUris, List<Integer> jsonColors, Context context) throws IOException {
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
         for (int i=0; i<jsonUris.size(); i++) {
             Uri uri = jsonUris.get(i);
 
             String geoJsonString = FileUtils.getStringFromFile(uri, context);
-            GeoJsonSource source = new GeoJsonSource("geojson"+i, geoJsonString);
-            mapboxMap.addSource(source);
-            LineLayer lineLayer = new LineLayer("geojson"+i, "geojson"+i);
-            lineLayer.setProperties(lineColor(jsonColors.get(i)));
-            mapboxMap.addLayer(lineLayer);
+            final GeoJsonSource source = new GeoJsonSource("geojson"+i, geoJsonString);
 
-            FeatureCollection featureCollection = FeatureCollection.fromJson(geoJsonString);
-            List<Feature> features = featureCollection.getFeatures();
+            final LineLayer lineLayer = new LineLayer("geojson"+i, "geojson"+i);
+            lineLayer.setProperties(lineColor(jsonColors.get(i)));
+
+            mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                @Override
+                public void onStyleLoaded(@NonNull Style style) {
+                    style.addSource(source);
+                    style.addLayer(lineLayer);
+                }
+            });
+
+/*            FeatureCollection featureCollection = FeatureCollection.fromJson(geoJsonString);
+            List<Feature> features = featureCollection.features();
 
             for (Feature f : features) {
-                if (f.getGeometry() instanceof Point) {
-                    Position coordinates = (Position) f.getGeometry().getCoordinates();
-                    mapboxMap.addMarker(new MarkerViewOptions()
-                            .position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude()))
+                if (f.geometry() instanceof Point) {
+                    Position coordinates = (Position) ((Point) f.geometry()).coordinates();
+
+                    mapboxMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(coordinates.lati(), coordinates.getLongitude()))
                     );
                 } else if (f.getGeometry() instanceof com.mapbox.services.commons.geojson.Polygon){
                     com.mapbox.services.commons.geojson.Polygon polygon = (com.mapbox.services.commons.geojson.Polygon) f.getGeometry();
@@ -72,7 +84,7 @@ class JsonifyMapBox {
                     }
                 }
 
-            }
+            }*/
         }
 
         try {

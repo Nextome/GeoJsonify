@@ -35,7 +35,7 @@ public class MapBoxActivity extends MapBaseActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getIntentExtras(getIntent());
-        Mapbox.getInstance(this.getContext(), getString(R.string.mapbox_key));
+        Mapbox.getInstance(this.getContext(), getString(R.string.mapbox_k));
 
         setContentView(R.layout.activity_map_box);
 
