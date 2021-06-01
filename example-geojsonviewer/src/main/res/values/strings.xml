@@ -30,9 +30,13 @@
     <string name="activity_main_info"><![CDATA[Made with <3 at Nextome]]></string>
     <string name="activity_main_back">BACK</string>
     <string name="activity_main_add">ADD ANOTHER</string>
+    <string name="osm_center">"Center"</string>
+    <string name="osm_unlock">"Unlock"</string>
+    <string name="start_nav">"Start here"</string>
+    <string name="continue_nav">"Continue"</string>
 
     <string name="gmaps_key" templateMergeStrategy="preserve" translatable="false">
-        GOOGLE_MAPS_KEY_HERE
+        "AIzaSyAyoK5ZAwyHHwS0FN5XKr1plilnZ9_rzjc"
     </string>
     <string name="mapbox_key">MAPBOX_KEY_HERE</string>
     <string name="geojson_opener_unable_to_parse">Unable to parse Json</string>
