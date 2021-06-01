@@ -36,7 +36,7 @@
     <string name="continue_nav">"Continue"</string>
 
     <string name="gmaps_key" templateMergeStrategy="preserve" translatable="false">
-        "AIzaSyAyoK5ZAwyHHwS0FN5XKr1plilnZ9_rzjc"
+        Add Key here
     </string>
     <string name="mapbox_key">MAPBOX_KEY_HERE</string>
     <string name="geojson_opener_unable_to_parse">Unable to parse Json</string>
